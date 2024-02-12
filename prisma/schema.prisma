@@ -1,0 +1,39 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  name     String
+  email    String @unique
+  password String
+}
+
+model Knight {
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  name     String
+  email    String   @unique
+  password String
+  Weapons  Weapon[]
+
+  @@map("knights")
+}
+
+model Weapon {
+  id             String    @id @default(auto()) @map("_id") @db.ObjectId
+  title          String
+  slug           String    @unique
+  content        String
+  createAt       DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime? @updatedAt @map("updated_at")
+  weaponKnightId String    @map("weapon_inight_id")
+
+  weaponKnight Knight @relation(fields: [weaponKnightId], references: [id])
+
+  @@map("weapons")
+}
